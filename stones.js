@@ -7,19 +7,20 @@ class point {
 
 class boardRef {
 	constructor(boardX, boardY) {
-		this.boardX = boardX
-		this.boardY = boardY
+		this.bx = boardX
+		this.by = boardY
+		this.point = findCoordinate(this)
 	}
 }
 
 class stone {
 	constructor(boardX, boardY, string, moveIndex) {
-		this.X = boardX;
-		this.Y = boardY;
+		this.boardRef = new boardRef(boardX, boardY);
 		this.alive = true;
 		this.colour = string
 		this.group = ""
 		this.moveIndex = moveIndex
+		this.point = findCoordinate(this.boardRef)
 	}
 }
 
@@ -30,17 +31,15 @@ class group {
 	}
 }
 
-
-
-function findCoordinate(boardX, boardY) {
-	var x = pad + ((boardX - 1) * gridSpacing)
-	var y = pad + ((boardY - 1) * gridSpacing)
-	return [x, y];
+function findCoordinate(boardRef) {
+	var x = pad + ((boardRef.bx - 1) * gridSpacing)
+	var y = pad + ((boardRef.by - 1) * gridSpacing)
+	return new point(x, y);
 }
 
-function drawDot(x, y) {
+function drawDot(point) {
 	ctx.beginPath()
-	ctx.arc(x, y, 3, 0, 2 * Math.PI);
+	ctx.arc(point.x, point.y, 3, 0, 2 * Math.PI);
 	ctx.fillStyle = 'black';
 	ctx.fill();
 	ctx.stroke();
@@ -48,8 +47,7 @@ function drawDot(x, y) {
 
 function drawStone(stone) {
 	ctx.beginPath()
-	coord = findCoordinate(stone.X, stone.Y)
-	ctx.arc(coord[0], coord[1], 20, 0, 2 * Math.PI);
+	ctx.arc(stone.point.x, stone.point.y, 20, 0, 2 * Math.PI);
 	ctx.fillStyle = stone.colour;
 	ctx.fill();
 	ctx.stroke();

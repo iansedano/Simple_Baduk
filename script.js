@@ -10,13 +10,12 @@ ctx.fillRect(1, 1, 498, 498);
 
 
 
+//  +++++++ DRAWING GRID +++++++ 
+
 // Grid initalizing parameters
 var gridSize = 9;
 var pad = 20.5;
 var gridSpacing = 50;
-
-
-//  +++++++ DRAWING GRID +++++++ 
 
 ctx.beginPath();
 //vertical lines
@@ -31,8 +30,9 @@ for (var i = 0; i < gridSize; i++) {
 }
 ctx.stroke();
 
-var tengen = findCoordinate(5,5);
-drawDot(tengen[0], tengen[1]);
+// Drawing tengen star point
+var tengen = new boardRef(5, 5)
+drawDot(tengen.point);
 
 // ++ CLICK MAP ++
 
@@ -41,32 +41,32 @@ for (var i = 0; i < gridSize; i++){
 	clickMapArray[i] = new Array(gridSize)
 }
 
-boxSize = 40;
+boxSize = 30;
 positionX = pad;
 positionY = pad;
 
 for (var i = 0; i < gridSize; i++) {
 	positionY = pad;
 	for (var j = 0; j < gridSize; j++) {
-		clickMapArray[i][j] = new Array(positionX, positionY);
+		clickMapArray[i][j] = new point(positionX, positionY);
 		positionY += gridSpacing;
 	}
 	positionX +=gridSpacing;
 }
 
-/*
-/// DRAWS RECTANGLES
+
+/// draws rectangles
 for (var i in clickMapArray) {
 	for (var j in clickMapArray[i]) {
 		drawClickRect(clickMapArray[i][j]);
 	}
 }
-*/
 
-function drawClickRect(array) {
+
+function drawClickRect(point) {
 	ctx.beginPath();
 	ctx.fillStyle = '#ffff99';
-	ctx.fillRect(array[1] - (boxSize/2), array[0] - (boxSize/2), boxSize, boxSize);
+	ctx.fillRect(point.y - (boxSize/2), point.x - (boxSize/2), boxSize, boxSize);
 	ctx.stroke();
 	}
 
@@ -77,29 +77,36 @@ function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
-    console.log("x: " + x + " y: " + y)
-    return [x, y]
+    return new point(x, y);
 }
 
 canvas.addEventListener('mousedown', function(e) {
-    getCursorPosition(canvas, e)
+    newStoneRef = getBoardRef(getCursorPosition(canvas, e))
+    if (newStoneRef != "") {
+    	placeStone(newStoneRef)
+    }
 })
 
-function placeStone() {
-
-
+function placeStone(boardRef) {
+	newStone = new stone(boardRef.bx, boardRef.by, playerTurn, moveIndex)
+    drawStone(newStone)
+    if (playerTurn == 'black') {
+    	playerTurn = 'white'
+    } else {
+    	playerTurn = 'black'
+    }
+    moveIndex += 1
 }
 	
-function getBoardPosition(x, y) {
-
+function getBoardRef(point) {
 	for (var i = 0; i < gridSize; i++) {
 		for (var j = 0; j < gridSize; j++) {
-			var xMin = clickMapArray[i][j][0] - (boxSize / 2)
-			var xMax = clickMapArray[i][j][0] + (boxSize / 2)
-			var yMin = clickMapArray[i][j][1] - (boxSize / 2)
-			var yMax = clickMapArray[i][j][1] + (boxSize / 2)
-			if (x >= xMin && x <= xMax && y >= yMin && y <= yMax) {
-				return [i, j];
+			var xMin = clickMapArray[i][j].x - (boxSize / 2)
+			var xMax = clickMapArray[i][j].x + (boxSize / 2)
+			var yMin = clickMapArray[i][j].y - (boxSize / 2)
+			var yMax = clickMapArray[i][j].y + (boxSize / 2)
+			if (point.x >= xMin && point.x <= xMax && point.y >= yMin && point.y <= yMax) {
+				return new boardRef(i + 1, j + 1);
 				break;
 			}
 		}
@@ -120,5 +127,3 @@ moveIndex = 1;
 groupIndex = 1;
 
 
-var firstStone = new stone(1, 1, "black", 1);
-drawStone(firstStone);
