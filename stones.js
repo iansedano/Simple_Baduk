@@ -1,16 +1,25 @@
-/*class point {
-	constructor(x, y)
-	this.x = x
-	this.y = y
-}*/
+class point {
+	constructor(x, y) {
+		this.x = x
+		this.y = y
+	}
+}
+
+class boardRef {
+	constructor(boardX, boardY) {
+		this.boardX = boardX
+		this.boardY = boardY
+	}
+}
 
 class stone {
-	constructor(boardX, boardY, string) {
+	constructor(boardX, boardY, string, moveIndex) {
 		this.X = boardX;
 		this.Y = boardY;
 		this.alive = true;
 		this.colour = string
 		this.group = ""
+		this.moveIndex = moveIndex
 	}
 }
 
