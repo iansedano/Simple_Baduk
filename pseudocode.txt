@@ -1,0 +1,64 @@
+LIFE CHECKER
+
+GROUP BUILDER
+
+checkedList = []
+
+for each position on board
+	if empty
+		break
+	if in checkedList
+		break
+	else
+		groupBuilder(current position)
+	if group is white
+		add to white group list
+	if group is black
+		add to black group list
+	if currentmove is in deadGroup
+		
+
+
+function groupBuilder(position)
+	
+	colour = position.colour
+	add stone to friendList
+
+	for each friendList
+		if in checkedList
+			break
+
+		checkFriend()
+
+	checkFriend()
+		if in checkedList
+			remove current from friendList
+		
+		for each cardinal
+			if friend
+				add to friendList
+			if empty
+				liberties += 1
+
+		remove current from friendList
+		add current to checkedList
+
+	return liberties
+
+end
+
+
+
+for each colour
+	for each group
+		if dead
+			add to deadList
+		else
+			add to aliveList
+
+white deadList
+white aliveList
+
+black deadList
+black aliveList
+

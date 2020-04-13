@@ -3,14 +3,13 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-
-
-
-
+//  ++++++++++++++++++++++++++++
 //  +++++++ DRAWING GRID +++++++ 
+//  ++++++++++++++++++++++++++++
 
 // Grid initalizing parameters
-var gridSize = 9;
+
+var gridSize = 9; // THIS PARAMETER SETS SIZE FOR GRID AND GAME - IMPORTANT!
 var pad = 20.5;
 var gridSpacing = 50;
 
@@ -39,7 +38,10 @@ function drawBoard() {
 	var tengen = new boardRef(5, 5)
 	drawDot(tengen.point);
 }
-// ++ CLICK MAP ++
+
+//  ++++++++++++++++++++++++++++
+//  ++++++++ CLICK MAP +++++++++
+//  ++++++++++++++++++++++++++++
 
 var clickMapArray = new Array(gridSize);
 for (var i = 0; i < gridSize; i++){
@@ -59,15 +61,14 @@ for (var i = 0; i < gridSize; i++) {
 	positionX +=gridSpacing;
 }
 
-
-/// draws rectangles
+/*
+// draws rectangles
 for (var i in clickMapArray) {
 	for (var j in clickMapArray[i]) {
-//		drawClickRect(clickMapArray[i][j]);
+			drawClickRect(clickMapArray[i][j]);
 	}
 }
 
-/*
 function drawClickRect(point) {
 	ctx.beginPath();
 	ctx.fillStyle = '#ffff99';

@@ -1,3 +1,4 @@
+
 class group {
 	constructor () {
 		this.stones = [];
@@ -170,3 +171,4 @@ function checkLife(stoneArray) {
 	}
 	
 }
+
