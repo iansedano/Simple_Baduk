@@ -16,7 +16,10 @@ for each position on board
 	if group is black
 		add to black group list
 	if currentmove is in deadGroup
-		
+		if enemy also has deadGroup
+			kill enemy deadGroup
+		else
+			break "illegal move"
 
 
 function groupBuilder(position)
