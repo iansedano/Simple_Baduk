@@ -1,67 +1,83 @@
-LIFE CHECKER
-
-GROUP BUILDER
-
-checkedList = []
-
-for each position on board
-	if empty
-		break
-	if in checkedList
-		break
-	else
-		groupBuilder(current position)
-	if group is white
-		add to white group list
-	if group is black
-		add to black group list
-	if currentmove is in deadGroup
-		if enemy also has deadGroup
-			kill enemy deadGroup
-		else
-			break "illegal move"
+Things to add
+	KO
+	group lists??
+	cardinals...
 
 
-function groupBuilder(position)
-	
-	colour = position.colour
-	add stone to friendList
 
-	for each friendList
+PSEUDOCODE
+
+two options for board
+	board = [
+				[{pos},{pos},{pos}],[{pos},{pos},{pos}],
+				[{pos},{pos},{pos}],[{pos},{pos},{pos}],
+				[{pos},{pos},{pos}],[{pos},{pos},{pos}]
+				]
+
+OR
+	board = [{pos},{pos},{pos},{pos},{pos},{pos},{pos},{pos},{pos},{pos},{pos},{pos}]
+
+VARS
+	checkedList = []
+	friendsToCheck = [] // utility list
+	cardinals = [N,E,S,W]
+
+CLASSES
+	class position
+		state = black, white, empty
+		boardx = 1
+		borady = 9
+
+	class group
+		liberties = 1
+		colour = black, white
+		positions = []
+
+	class player
+		colour = black, white
+		prisoners = 0
+		groups = []
+
+
+function Check life()
+	for each position in board
+		if position.state == empty
+			break
 		if in checkedList
 			break
+		else
+			groupBuilder(current position)
+		if group is white
+			add to white group list
+		if group is black
+			add to black group list
+		if currentmove is in deadGroup
+			if enemy also has deadGroup
+				kill enemy deadGroup
+			else
+				break "illegal move"
 
-		checkFriend()
+function groupBuilder(position)
+	colour = position.state
+	copy position to friendsToCheck
 
-	checkFriend()
+	for each position in friendsToCheck
 		if in checkedList
-			remove current from friendList
-		
-		for each cardinal
-			if friend
-				add to friendList
-			if empty
-				liberties += 1
+			remove current from friendsToCheck
+			break
 
-		remove current from friendList
-		add current to checkedList
-
-	return liberties
-
+		checkFriend(position)
 end
 
+checkFriend(position)
 
+	for each cardinal
+		if friend
+			copy to friendsToCheck
+		if empty
+			liberties += 1
 
-for each colour
-	for each group
-		if dead
-			add to deadList
-		else
-			add to aliveList
+	remove current from friendsToCheck
+	copy current to checkedList
 
-white deadList
-white aliveList
-
-black deadList
-black aliveList
-
+return liberties
