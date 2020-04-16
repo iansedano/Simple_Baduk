@@ -35,13 +35,6 @@ class stone {
 }
 
 
-function changeTurn() {
-	if (playerTurn === "black") {
-		playerTurn = "white"
-	} else {
-		playerTurn = "black"
-	}
-}
 
 function placeStone(boardRef) {
 	if (gameState[boardRef.bx-1][boardRef.by - 1] == undefined) {
