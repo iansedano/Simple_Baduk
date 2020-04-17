@@ -51,13 +51,18 @@ canvas.addEventListener('mousedown', function(e) {
 // ++++++++ TESTING SET UPS +++++++++
 // ++++++++++++++++++++++++++++++++++
 
+
 /* SIMPLE CAPTURE SETUP
+=======
+// SIMPLE CAPTURE SETUP
+>>>>>>> 3acdc288206983a86aad9bc43ee623fd25b1acda
 playerTurn = "white";
 board[1][2].state = "white"
 board[2][3].state = "white"
 board[3][2].state = "white"
 board[2][2].state = "black"
 DrawStones(board, ctx)
+<<<<<<< HEAD
 */
 
 // simple group capture setup
@@ -70,6 +75,7 @@ board[2][1].state = "black"
 board[1][1].state = "white"
 board[3][1].state = "white"
 DrawStones(board, ctx)
+
 
 // ++++++++++++++++++++++++++++
 // ++++++++ FUNCTIONS +++++++++
@@ -91,6 +97,7 @@ function changeTurn() {
 	}
 }
 
+
 function move(bRef, activePlayer) {
 	var currentPosition = board[bRef.bx][bRef.by] // just for readability
 	if (currentPosition.state !== "empty") { // checking if spot taken
@@ -109,16 +116,17 @@ function move(bRef, activePlayer) {
 		// is there a dead enemy group?
 		var deadEnemy = findDeadEnemyGroup(groups, currentGroup)
 
+
 		if ((currentGroup.liberties == 0) && (deadEnemy == "no dead enemy")) {
 			window.alert("Suicide! Invalid move")
 			currentPosition.state = "empty"
 		} else if (deadEnemy != "no dead enemy") {
+
 			killGroup(deadEnemy, activePlayer)
 			changeTurn()
 		} else if (deadEnemy == "no dead enemy") {
 			changeTurn()
 		}
-
 	}
 }
 	
