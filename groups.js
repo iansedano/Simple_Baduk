@@ -8,7 +8,7 @@ class group {
 
     	// adds position to list of positions within this group
     	this.positions.push(position)
-    	
+
     	// some definitions for readability
     	this.colour = position.state
 		if (this.colour == "white") {this.enemy = "black"}
@@ -35,7 +35,7 @@ class group {
             	if (cardinalStates[i] == "empty"){
             		this.liberties += 1
             		checkedList[cardinals[i].bx][cardinals[i].by] = cardinals[i]
-            	} else if (cardinalStates[i] == "friend") {
+            	} else if (cardinalStates[i] == this.colour) {
             		this.positions.push(cardinals[i])
             		friendsToCheck.push(cardinals[i])
             		checkedList[cardinals[i].bx][cardinals[i].by] = cardinals[i]
