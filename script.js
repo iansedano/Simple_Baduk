@@ -32,6 +32,9 @@ createClickMap();
 
 playerTurn = "black";
 
+playerBlack = new player("black")
+playerWhite = new player("white")
+
 // starting mouse listener
 canvas.addEventListener('mousedown', function(e) {
 	bRef = getBoardRef(getCursorPosition(canvas, e))
@@ -41,6 +44,18 @@ canvas.addEventListener('mousedown', function(e) {
 	}
 })
 
+
+// ++++++++++++++++++++++++++++++++++
+// ++++++++ TESTING SET UPS +++++++++
+// ++++++++++++++++++++++++++++++++++
+
+// SIMPLE CAPTURE SETUP
+playerTurn = "white";
+board[1][2].state = "white"
+board[2][3].state = "white"
+board[3][2].state = "white"
+board[2][2].state = "black"
+DrawStones(board, ctx)
 
 
 // ++++++++++++++++++++++++++++
@@ -57,10 +72,6 @@ function changeTurn() {
 	}
 }
 
-
-	
-
-
 function move(bRef) {
 	var currentPosition = board[bRef.bx][bRef.by] // just for readability
 	if (currentPosition.state !== "empty") { // checking if spot taken
@@ -73,45 +84,71 @@ function move(bRef) {
 		var groups = []
 		buildGroups(currentPosition, groups)
 
-		//is current position in dead group??
+		//which group is the current move in?
+		var currentGroup = findGroupByPosition(currentPosition, groups)
 		
-		var currentGroupIndex = -1
-		groups.forEach((group, index) => {
-			posIndex = group.positions.findIndex(pos => pos == currentPosition)
-			if (posIndex != -1) {
-				currentGroupIndex = index
-			}
-		})
+		// is there a dead enemy group?
+		var deadEnemy = findDeadEnemyGroup(groups, currentGroup)
 
-		var currentGroup = groups[currentGroupIndex]
-		
-		if (currentGroup.liberties == 0) {
-			deadEnemyGroup = groups.filter(g => {
-				g.liberties == 0 && g.colour == currentGroup.enemy
-			})
+		debugger
 
+		if ((currentGroup.liberties == 0) && (deadEnemy == "no dead enemy")) {
+			window.alert("Suicide! Invalid move")
+			currentPosition.state = "empty"
+		} else if (deadEnemy != "no dead enemy") {
+			killGroup(deadEnemy)
+			changeTurn()
+		} else if (deadEnemy == "no dead enemy") {
+			changeTurn()
 		}
-		
-
-		//does enemy have a dead group?
-
-		//kill enemy group
-
-		//place stone
-
-		//end turn
-
-		changeTurn()
 
 	}
 }
 	
-	;
+function killGroup(group, player) {
+	group.positions.forEach(pos => {
+		pos.state = empty
+		player.prisoners += 1
+	})
+}
 
+function isGroupAlive(group) {
+	if (group.liberties == 0) {
+		return false
+	} else if (group.liberties > 0) {
+		return true
+	}
+}
 
-function checkEnemyDead(currentPosition, groups) {
-	colour = current.Position.state
+function findDeadEnemyGroup(groupList, friendlyGroup) {
+	debugger
+	var deadEnemyGroupIndex = groupList.findIndex(g => {
+			debugger
+			(g.liberties == 0) && (g.colour == friendlyGroup.enemy)
+		})
 
+	if (deadEnemyGroupIndex == -1) {
+		return "no dead enemy"
+	} else if (deadEnemyGroupIndex > -1) {
+		return groupList[deadEnemyGroupIndex]
+	}
+}
+
+function findGroupByPosition(position, groupList) {
+	var currentGroupIndex = -1
+	var groupFound = ''
+	groupList.forEach((group, index) => {
+		posIndex = group.positions.findIndex(pos => pos == position)
+		if (posIndex != -1) {
+			currentGroupIndex = posIndex
+			groupFound =  groupList[currentGroupIndex]
+		}
+	})
+	if (currentGroupIndex == -1) {
+		return "group not found"
+	} else {
+		return groupFound
+	}
 }
 
 function buildGroups(pos, groups) {
