@@ -15,8 +15,8 @@ class boardRef {
 
 // 
 
-function findCoordinate(boardRef) {
-	var x = pad + ((boardRef.bx - 1) * gridSpacing)
-	var y = pad + ((boardRef.by - 1) * gridSpacing)
+function findCoordinate(pos) {
+	var x = pad + ((pos.bx) * gridSpacing)
+	var y = pad + ((pos.by) * gridSpacing)
 	return new point(x, y);
 }

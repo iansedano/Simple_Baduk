@@ -37,8 +37,16 @@ canvas.addEventListener('mousedown', function(e) {
 	bRef = getBoardRef(getCursorPosition(canvas, e))
 	if (bRef != undefined) { // if mouse has clicked somewhere invalid, does nothing
 	    move(bRef)
+	    DrawStones(board, ctx)
 	}
 })
+
+
+
+// ++++++++++++++++++++++++++++
+// ++++++++ FUNCTIONS +++++++++
+// ++++++++++++++++++++++++++++
+
 
 
 function changeTurn() {
@@ -76,10 +84,15 @@ function move(bRef) {
 		})
 
 		var currentGroup = groups[currentGroupIndex]
+		
 		if (currentGroup.liberties == 0) {
-			//does enemy have dead group?
+			deadEnemyGroup = groups.filter(g => {
+				g.liberties == 0 && g.colour == currentGroup.enemy
+			})
+
 		}
-		debugger
+		
+
 		//does enemy have a dead group?
 
 		//kill enemy group
@@ -88,11 +101,18 @@ function move(bRef) {
 
 		//end turn
 
+		changeTurn()
+
 	}
+}
 	
 	;
-}
 
+
+function checkEnemyDead(currentPosition, groups) {
+	colour = current.Position.state
+
+}
 
 function buildGroups(pos, groups) {
 
@@ -149,23 +169,18 @@ function getCardinals(position) {
 	} else if (bx == (gridSize - 1)) {
 		E = "edge";
 	}
+
     if (by == (gridSize - 1)) {
     	S = "edge";
     } else if (by == 0) {
     	N = "edge";
     }
-  
-  	// getting positions at cardinals
-    var xN = board[bx][by - 1];
-    var xE = board[bx + 1][by];
-    var xS = board[bx][by + 1];
-    var xW = board[bx - 1][by];
 
-    // assigning these positions if not edge
-    if (N != "edge") {N = xN};
-    if (E != "edge") {E = xE};
-    if (S != "edge") {S = xS};
-    if (W != "edge") {W = xW};
+    // assigning positions if not edge
+    if (N != "edge") {N = board[bx][by - 1]};
+    if (E != "edge") {E = board[bx + 1][by]};
+    if (S != "edge") {S = board[bx][by + 1]};
+    if (W != "edge") {W = board[bx - 1][by]};
 
     return [N, E, S, W];
 

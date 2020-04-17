@@ -60,7 +60,7 @@ function createClickMap() {
 		positionX +=gridSpacing;
 	}
 
-	
+	/*
 	// draws rectangles
 	for (var i in clickMapArray) {
 		for (var j in clickMapArray[i]) {
@@ -74,8 +74,7 @@ function createClickMap() {
 		ctx.fillRect(point.y - (boxSize/2), point.x - (boxSize/2), boxSize, boxSize);
 		ctx.stroke();
 		}
-	
-
+	*/
 
 }
 
@@ -97,6 +96,23 @@ function drawDot(point) {
 	ctx.stroke();
 }
 
+function DrawStones(board, context) {
+	board.forEach(x => {
+		x.forEach(pos => {
+			if (pos.state != 'empty') {
+				coord = findCoordinate(pos)
+				context.beginPath()
+				context.arc(coord.x, coord.y, 20, 0, 2 * Math.PI);
+				context.fillStyle = pos.state;
+				context.fill();
+				context.stroke();
+			}
+		})
+	})
+		
+
+
+}
 
 function getBoardRef(point) {
 	for (var i = 0; i < gridSize; i++) {
