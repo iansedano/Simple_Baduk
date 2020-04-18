@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 
 // Grid initalizing parameters
 
-var gridSize = 5; // THIS PARAMETER SETS SIZE FOR GRID AND GAME - IMPORTANT!
+var gridSize = 9; // THIS PARAMETER SETS SIZE FOR GRID AND GAME - IMPORTANT!
 
 // GAME STATE
 
@@ -53,19 +53,16 @@ canvas.addEventListener('mousedown', function(e) {
 
 
 /* SIMPLE CAPTURE SETUP
-=======
-// SIMPLE CAPTURE SETUP
->>>>>>> 3acdc288206983a86aad9bc43ee623fd25b1acda
+
 playerTurn = "white";
 board[1][2].state = "white"
 board[2][3].state = "white"
 board[3][2].state = "white"
 board[2][2].state = "black"
 DrawStones(board, ctx)
-<<<<<<< HEAD
 */
 
-// simple group capture setup
+/* simple group capture setup
 playerTurn = "white";
 board[1][2].state = "white"
 board[2][3].state = "white"
@@ -75,7 +72,21 @@ board[2][1].state = "black"
 board[1][1].state = "white"
 board[3][1].state = "white"
 DrawStones(board, ctx)
+*/
 
+
+// NEAR KO SETUP
+/*
+playerTurn = "black";
+board[1][2].state = "white"
+board[2][3].state = "white"
+board[3][2].state = "white"
+board[2][1].state = "white"
+board[1][1].state = "black"
+board[2][0].state = "black"
+board[3][1].state = "black"
+DrawStones(board, ctx)
+*/
 
 // ++++++++++++++++++++++++++++
 // ++++++++ FUNCTIONS +++++++++
@@ -109,7 +120,6 @@ function move(bRef, activePlayer) {
 		// initalizing groups list
 		var groups = []
 		buildGroups(currentPosition, groups)
-		debugger
 		//which group is the current move in?
 		var currentGroup = findGroupByPosition(currentPosition, groups)
 		
@@ -158,13 +168,13 @@ function findDeadEnemyGroup(groupList, friendlyGroup) {
 	}
 }
 
-function findGroupByPosition(position, groupList) {
+function findGroupByPosition(positionToFind, groupList) {
 	var currentGroupIndex = -1
 	var groupFound = ''
-	groupList.forEach((group, index) => {
-		posIndex = group.positions.findIndex(pos => pos == position)
+	groupList.forEach((g, index) => {
+		posIndex = g.positions.findIndex(pos => pos == positionToFind)
 		if (posIndex != -1) {
-			currentGroupIndex = posIndex
+			currentGroupIndex = index
 			groupFound =  groupList[currentGroupIndex]
 		}
 	})
