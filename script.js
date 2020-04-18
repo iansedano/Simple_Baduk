@@ -109,7 +109,7 @@ function move(bRef, activePlayer) {
 		// initalizing groups list
 		var groups = []
 		buildGroups(currentPosition, groups)
-
+		debugger
 		//which group is the current move in?
 		var currentGroup = findGroupByPosition(currentPosition, groups)
 		
@@ -188,8 +188,6 @@ function buildGroups(pos, groups) {
 			checked[i][j] = "unchecked"
 		}
 	}
-
-
 
 	// checking whole board and building groups (builds new picture of groups for every move)
 	for (var i = 0; i < board.length; i++) {

@@ -31,16 +31,30 @@ class group {
             // following ignores edge or enemy
             // if empty adds liberty and to checked list
             // if friend adds to friends to check and checked list and group positions
-            for (i = 0; i < 4; i++){
-            	if (cardinalStates[i] == "empty"){
+            for (j = 0; j < 4; j++){
+            	if (cardinals[j] == "edge") {
+                    //do nothing
+                }else if (this.isPosInGroup(cardinals[j])) {
+                    // do nothing
+                } else if (cardinalStates[j] == "empty"){
             		this.liberties += 1
-            		checkedList[cardinals[i].bx][cardinals[i].by] = cardinals[i]
-            	} else if (cardinalStates[i] == this.colour) {
-            		this.positions.push(cardinals[i])
-            		friendsToCheck.push(cardinals[i])
-            		checkedList[cardinals[i].bx][cardinals[i].by] = cardinals[i]
+            		checkedList[cardinals[j].bx][cardinals[j].by] = cardinals[j]
+            	} else if (cardinalStates[j] == this.colour) {
+            		this.positions.push(cardinals[j])
+            		friendsToCheck.push(cardinals[j])
+            		checkedList[cardinals[j].bx][cardinals[j].by] = cardinals[j]
             	}
             }
+        }
+    }
+
+    isPosInGroup(pos) {
+        var groupPosIndex = ''
+        groupPosIndex = this.positions.findIndex(p => p == pos)
+        if (groupPosIndex == -1) {
+            return false
+        } else if (groupPosIndex > -1) {
+            return true
         }
     }
 }
