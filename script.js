@@ -5,7 +5,8 @@ const ctx = canvas.getContext('2d');
 
 // Grid initalizing parameters
 
-var gridSize = 9; // THIS PARAMETER SETS SIZE FOR GRID AND GAME - IMPORTANT!
+// SETS SIZE FOR GRID AND GAME - IMPORTANT!
+var gridSize = 9; 
 
 // GAME STATE
 
@@ -16,9 +17,9 @@ for (var i = 0; i < gridSize; i++) {
 	board[i] = new Array(gridSize);
 }
 
-for (var i = 0; i < gridSize; i++) {
+for (i = 0; i < gridSize; i++) {
 	for (var j = 0; j < gridSize; j++) { 
-		board[i][j] = new pos(i,j)
+		board[i][j] = new pos(i,j);
 	}
 }
 
@@ -32,25 +33,25 @@ createClickMap();
 
 playerTurn = "black";
 
-playerBlack = new player("black")
-playerWhite = new player("white")
+playerBlack = new player("black");
+playerWhite = new player("white");
 
 // starting mouse listener
 canvas.addEventListener('mousedown', function(e) {
-	bRef = getBoardRef(getCursorPosition(canvas, e))
-	if (bRef != undefined) { // if mouse has clicked somewhere invalid, does nothing
-	    currentPlayer = getPlayer()
-	    move(bRef, currentPlayer)
-	    drawBoard()
-	    DrawStones(board, ctx)
+	bRef = getBoardRef(getCursorPosition(canvas, e));
+	// if mouse has clicked somewhere invalid, does nothing
+	if (bRef != undefined) {
+	    currentPlayer = getPlayer();
+	    move(bRef, currentPlayer);
+	    drawBoard();
+	    DrawStones(board, ctx);
 	}
-})
+});
 
 
 // ++++++++++++++++++++++++++++++++++
 // ++++++++ TESTING SET UPS +++++++++
 // ++++++++++++++++++++++++++++++++++
-
 
 /* SIMPLE CAPTURE SETUP
 
@@ -74,7 +75,6 @@ board[3][1].state = "white"
 DrawStones(board, ctx)
 */
 
-
 // NEAR KO SETUP
 /*
 playerTurn = "black";
@@ -94,64 +94,63 @@ DrawStones(board, ctx)
 
 function getPlayer (){
 	if (playerTurn === "black") {
-		return playerBlack
+		return playerBlack;
 	} else {
-		return playerWhite
+		return playerWhite;
 	}
 }
 
 function changeTurn() {
 	if (playerTurn === "black") {
-		playerTurn = "white"
+		playerTurn = "white";
 	} else {
-		playerTurn = "black"
+		playerTurn = "black";
 	}
 }
 
 
 function move(bRef, activePlayer) {
-	var currentPosition = board[bRef.bx][bRef.by] // just for readability
+	var currentPosition = board[bRef.bx][bRef.by]; // just for readability
 	if (currentPosition.state !== "empty") { // checking if spot taken
-		window.alert("spot already taken")
+		window.alert("spot already taken");
 	} else {
-		
-		currentPosition.state = playerTurn // Temporary assigning colour to position
+		// Temporary assigning colour to position
+		currentPosition.state = playerTurn;
 		
 		// initalizing groups list
-		var groups = []
-		buildGroups(currentPosition, groups)
+		var groups = [];
+		buildGroups(currentPosition, groups);
 		//which group is the current move in?
-		var currentGroup = findGroupByPosition(currentPosition, groups)
+		var currentGroup = findGroupByPosition(currentPosition, groups);
 		
 		// is there a dead enemy group?
-		var deadEnemy = findDeadEnemyGroup(groups, currentGroup)
+		var deadEnemy = findDeadEnemyGroup(groups, currentGroup);
 
 
-		if ((currentGroup.liberties == 0) && (deadEnemy == "no dead enemy")) {
-			window.alert("Suicide! Invalid move")
-			currentPosition.state = "empty"
+		if ((currentGroup.liberties === 0) && (deadEnemy === "no dead enemy")) {
+			window.alert("Suicide! Invalid move");
+			currentPosition.state = "empty";
 		} else if (deadEnemy != "no dead enemy") {
-
-			killGroup(deadEnemy, activePlayer)
-			changeTurn()
+			killGroup(deadEnemy, activePlayer);
+			changeTurn();
 		} else if (deadEnemy == "no dead enemy") {
-			changeTurn()
+			changeTurn();
 		}
 	}
 }
 	
 function killGroup(groupToKill, playerKilling) {
 	groupToKill.positions.forEach(pos => {
-		pos.state = "empty"
-		playerKilling.prisoners += 1
+		pos.state = "empty";
+		playerKilling.prisoners += 1;
 	})
 }
 
 function isGroupAlive(group) {
 	if (group.liberties == 0) {
-		return false
+		return false;
 	} else if (group.liberties > 0) {
-		return true
+		return true;
 	}
 }
 
@@ -159,10 +158,10 @@ function findDeadEnemyGroup(groupList, friendlyGroup) {
 
 	var deadEnemyGroupIndex = groupList.findIndex(
 		g => g.liberties == 0 && g.colour == friendlyGroup.enemy
-		)
+		);
 
 	if (deadEnemyGroupIndex == -1) {
-		return "no dead enemy"
+		return "no dead enemy";
 	} else if (deadEnemyGroupIndex > -1) {
 		return groupList[deadEnemyGroupIndex]
 	}

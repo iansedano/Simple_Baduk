@@ -3,18 +3,20 @@
 //  +++++++ DRAWING GRID +++++++ 
 //  ++++++++++++++++++++++++++++
 
+// https://stackoverflow.com/questions/34772957/how-to-make-canvas-responsive
+
 // CANVAS
 
 
-var pad = 20.5;
-var gridSpacing = 50;
+
 
 function drawBoard() {
-	
+	var pad = 30.5;
+	var gridSpacing = 50;
 	//CANVAS Background
 	ctx.beginPath();
 	ctx.fillStyle = '#ffd1b3';
-	ctx.fillRect(1, 1, 498, 498);
+	ctx.fillRect(1, 1, 500, 500);
 
 	//GRID
 	ctx.beginPath();
@@ -31,7 +33,7 @@ function drawBoard() {
 	ctx.stroke();
 
 	// Drawing tengen star point
-	var tengen = new boardRef(5, 5)
+	var tengen = new boardRef((gridSize-1)/2,(gridSize-1)/2)
 	drawDot(tengen.point);
 }
 
