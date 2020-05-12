@@ -10,7 +10,7 @@ This is a very simple implementation that can be used as a fast and lightweight 
 
 ## The algorithm
 
-![Image of Flowchart](https://)
+![Image of Flowchart](https://github.com/iansedano/Simple_Baduk/blob/master/baduk_flowchart.png)
 
 I used a flood-fill type algorithm that uses queues: for the whole board, for the group, and for the cardinal points of each group. The tricky part is making sure the queues are updated correctly. During this process the algorithm counts the number of "liberties" that the group has, and thus determines if the group is alive or dead.
 
