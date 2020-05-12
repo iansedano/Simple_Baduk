@@ -7,7 +7,8 @@ const ctx = canvas.getContext('2d');
 
 // SETS SIZE FOR GRID AND GAME - IMPORTANT!
 var gridSize = 9; 
-
+var pad = 48.5;
+var gridSpacing = 50;
 // GAME STATE
 
 // Array of board
@@ -27,14 +28,13 @@ for (i = 0; i < gridSize; i++) {
 // ++++++++ GAME +++++++++
 // +++++++++++++++++++++++
 
-
-drawBoard();
-createClickMap();
-
 playerTurn = "black";
-
 playerBlack = new player("black");
 playerWhite = new player("white");
+
+
+drawBoard(pad, gridSpacing);
+createClickMap();
 
 // starting mouse listener
 canvas.addEventListener('mousedown', function(e) {
@@ -43,7 +43,7 @@ canvas.addEventListener('mousedown', function(e) {
 	if (bRef != undefined) {
 	    currentPlayer = getPlayer();
 	    move(bRef, currentPlayer);
-	    drawBoard();
+	    drawBoard(pad, gridSpacing);
 	    DrawStones(board, ctx);
 	}
 });

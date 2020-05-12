@@ -7,12 +7,7 @@
 
 // CANVAS
 
-
-
-
-function drawBoard() {
-	var pad = 30.5;
-	var gridSpacing = 50;
+function drawBoard(pad, gridSpacing) {
 	//CANVAS Background
 	ctx.beginPath();
 	ctx.fillStyle = '#ffd1b3';
@@ -35,6 +30,11 @@ function drawBoard() {
 	// Drawing tengen star point
 	var tengen = new boardRef((gridSize-1)/2,(gridSize-1)/2)
 	drawDot(tengen.point);
+
+	document.getElementById("turn").innerHTML = playerTurn + "'s turn";
+
+	document.getElementById("whitePrisoners").innerHTML = "black has " + playerBlack.prisoners + " prisoners.";
+	document.getElementById("blackPrisoners").innerHTML = "white has " + playerWhite.prisoners + " prisoners";
 }
 
 //  ++++++++++++++++++++++++++++
