@@ -3,12 +3,12 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 
-// Grid initalizing parameters
-
-// SETS SIZE FOR GRID AND GAME - IMPORTANT!
+// SETS SIZE FOR GRID AND GAME - only works for 9 x 9 for now.
 var gridSize = 9; 
 var pad = 48.5;
 var gridSpacing = 50;
+
+
 // GAME STATE
 
 // Array of board
@@ -36,7 +36,6 @@ playerWhite = new player("white");
 drawBoard(pad, gridSpacing);
 createClickMap();
 
-// starting mouse listener
 canvas.addEventListener('mousedown', function(e) {
 	bRef = getBoardRef(getCursorPosition(canvas, e));
 	// if mouse has clicked somewhere invalid, does nothing
@@ -75,8 +74,7 @@ board[3][1].state = "white"
 DrawStones(board, ctx)
 */
 
-// NEAR KO SETUP
-/*
+/* NEAR KO SETUP
 playerTurn = "black";
 board[1][2].state = "white"
 board[2][3].state = "white"
@@ -113,13 +111,16 @@ function move(bRef, activePlayer) {
 	var currentPosition = board[bRef.bx][bRef.by]; // just for readability
 	if (currentPosition.state !== "empty") { // checking if spot taken
 		window.alert("spot already taken");
+
 	} else {
+
 		// Temporary assigning colour to position
 		currentPosition.state = playerTurn;
 		
 		// initalizing groups list
 		var groups = [];
 		buildGroups(currentPosition, groups);
+
 		//which group is the current move in?
 		var currentGroup = findGroupByPosition(currentPosition, groups);
 		
@@ -198,7 +199,9 @@ function buildGroups(pos, groups) {
 		}
 	}
 
-	// checking whole board and building groups (builds new picture of groups for every move)
+	// checking whole board and building groups 
+	// (builds new picture of groups for every move)
+
 	for (var i = 0; i < board.length; i++) {
 		for (var j = 0; j < board[i].length; j++) { 
 			// defining for readability
@@ -208,14 +211,12 @@ function buildGroups(pos, groups) {
 				checked[i][j] = posBeingChecked
 				if (posBeingChecked.state != "empty") {
 					var newGroup = new group() // initalizing new group
-					newGroup.buildFrom(posBeingChecked, checked) // building grou
+					newGroup.buildFrom(posBeingChecked, checked) // building group
 					groups.push(newGroup) // adding to group list
 				}
 			}
 		}
 	}
-
-
 }
 
 
