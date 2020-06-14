@@ -10,8 +10,8 @@
 function drawBoard(pad, gridSpacing) {
 	//CANVAS Background
 	ctx.beginPath();
-	ctx.fillStyle = '#ffd1b3';
-	ctx.fillRect(1, 1, 500, 500);
+	ctx.fillStyle = '#D6B450';
+	ctx.fillRect(0, 0, 500, 500);
 
 	//GRID
 	ctx.beginPath();
