@@ -104,46 +104,6 @@ class boardPosition {
   }
 }
 
-class stone {
-  constructor(boardX, boardY, string, moveIndex) {
-    this.boardRef = new boardRef(boardX, boardY);
-    this.colour = string;
-    this.moveIndex = moveIndex;
-    this.point = findCoordinate(this.boardRef);
-    allStones.push(this);
-  }
-
-  show() {
-    CTX.beginPath();
-    CTX.arc(this.point.x, this.point.y, 20, 0, 2 * Math.PI);
-    CTX.fillStyle = this.colour;
-    CTX.fill();
-    CTX.stroke();
-  }
-
-  place() {
-    if (gameState[this.boardRef.bx - 1][this.boardRef.by - 1] == undefined) {
-      newStone = new stone(
-        this.boardRef.bx,
-        this.boardRef.by,
-        playerTurn,
-        moveIndex
-      );
-      newStone.show();
-      gameState[this.boardRef.bx - 1][this.boardRef.by - 1] = newStone;
-      changeTurn();
-      moveIndex += 1;
-      for (var i = 0; i < allStones.length; i++) {
-        if (checkLife(allStones[i]) == false) {
-          deleteStone(allStones[i]);
-        }
-      }
-    } else {
-      window.alert("spot already taken");
-    }
-  }
-}
-
 const CANVAS = document.getElementById("canvas");
 const CTX = CANVAS.getContext("2d");
 
@@ -158,34 +118,29 @@ const playerWhite = new player("white");
 
 const clickMapArray = createClickMap();
 
-drawBoard(PADDING, GRID_SPACING);
-
-CANVAS.addEventListener("mousedown", function (e) {
-  bRef = getBoardRef(getCursorPosition(CANVAS, e));
-  // if mouse has clicked somewhere invalid, does nothing
-  if (bRef != undefined) {
-    currentPlayer = getPlayer();
-    move(bRef, currentPlayer);
-    drawBoard(PADDING, GRID_SPACING);
-    DrawStones(board, CTX);
-  }
-});
-
-var board = new Array(GRID_SIZE);
+var BOARD = new Array(GRID_SIZE);
 for (var i = 0; i < GRID_SIZE; i++) {
-  board[i] = new Array(GRID_SIZE);
+  BOARD[i] = new Array(GRID_SIZE);
 }
 
 for (i = 0; i < GRID_SIZE; i++) {
   for (var j = 0; j < GRID_SIZE; j++) {
-    board[i][j] = new boardPosition(i, j);
+    BOARD[i][j] = new boardPosition(i, j);
   }
 }
-function findCoordinate(pos) {
-  var x = PADDING + pos.bx * GRID_SPACING;
-  var y = PADDING + pos.by * GRID_SPACING;
-  return new point(x, y);
-}
+
+drawBoard(PADDING, GRID_SPACING, CTX);
+
+CANVAS.addEventListener("mousedown", function (e) {
+  bRef = getBoardRef(getCursorPosition(CANVAS, e), clickMapArray);
+
+  if (bRef != undefined) {
+    currentPlayer = getPlayer();
+    move(bRef, currentPlayer);
+    drawBoard(PADDING, GRID_SPACING, CTX);
+    DrawStones(BOARD, CTX);
+  }
+});
 
 // ++++++++++++++++++++++++++++++++++
 // ++++++++ TESTING SET UPS +++++++++
@@ -201,17 +156,17 @@ board[2][2].state = "black"
 DrawStones(board, ctx)
 */
 
-/* simple group capture setup
+// simple group capture setup
+
 playerTurn = "white";
-board[1][2].state = "white"
-board[2][3].state = "white"
-board[3][2].state = "white"
-board[2][2].state = "black"
-board[2][1].state = "black"
-board[1][1].state = "white"
-board[3][1].state = "white"
-DrawStones(board, ctx)
-*/
+BOARD[1][2].state = "white";
+BOARD[2][3].state = "white";
+BOARD[3][2].state = "white";
+BOARD[2][2].state = "black";
+BOARD[2][1].state = "black";
+BOARD[1][1].state = "white";
+BOARD[3][1].state = "white";
+DrawStones(BOARD, CTX);
 
 /* NEAR KO SETUP
 playerTurn = "black";
@@ -224,6 +179,12 @@ board[2][0].state = "black"
 board[3][1].state = "black"
 DrawStones(board, ctx)
 */
+
+function findCoordinate(pos) {
+  var x = PADDING + pos.bx * GRID_SPACING;
+  var y = PADDING + pos.by * GRID_SPACING;
+  return new point(x, y);
+}
 
 function getPlayer() {
   if (playerTurn === "black") {
@@ -242,7 +203,7 @@ function changeTurn() {
 }
 
 function move(bRef, activePlayer) {
-  var currentPosition = board[bRef.bx][bRef.by];
+  var currentPosition = BOARD[bRef.bx][bRef.by];
   if (currentPosition.state !== "empty") {
     // checking if spot taken
     window.alert("spot already taken");
@@ -332,11 +293,9 @@ function buildGroups(pos, groups) {
   // checking whole board and building groups
   // (builds new picture of groups for every move)
 
-  for (var i = 0; i < board.length; i++) {
-    for (var j = 0; j < board[i].length; j++) {
-      // defining for readability
-      posBeingChecked = board[i][j];
-      // is pos already checked?
+  for (var i = 0; i < BOARD.length; i++) {
+    for (var j = 0; j < BOARD[i].length; j++) {
+      posBeingChecked = BOARD[i][j];
       if (checked[i][j] == "unchecked") {
         checked[i][j] = posBeingChecked;
         if (posBeingChecked.state != "empty") {
@@ -375,44 +334,44 @@ function getCardinals(position) {
 
   // assigning positions if not edge
   if (N != "edge") {
-    N = board[bx][by - 1];
+    N = BOARD[bx][by - 1];
   }
   if (E != "edge") {
-    E = board[bx + 1][by];
+    E = BOARD[bx + 1][by];
   }
   if (S != "edge") {
-    S = board[bx][by + 1];
+    S = BOARD[bx][by + 1];
   }
   if (W != "edge") {
-    W = board[bx - 1][by];
+    W = BOARD[bx - 1][by];
   }
 
   return [N, E, S, W];
 }
 
-function drawBoard(pad, gridSpacing) {
+function drawBoard(pad, gridSpacing, context) {
   //CANVAS Background
-  CTX.beginPath();
-  CTX.fillStyle = "#D6B450";
-  CTX.fillRect(0, 0, 500, 500);
+  context.beginPath();
+  context.fillStyle = "#D6B450";
+  context.fillRect(0, 0, 500, 500);
 
   //GRID
-  CTX.beginPath();
+  context.beginPath();
   //vertical lines
   for (var i = 0; i < GRID_SIZE; i++) {
-    CTX.moveTo(pad + gridSpacing * i, pad);
-    CTX.lineTo(pad + gridSpacing * i, pad + (GRID_SIZE - 1) * gridSpacing);
+    context.moveTo(pad + gridSpacing * i, pad);
+    context.lineTo(pad + gridSpacing * i, pad + (GRID_SIZE - 1) * gridSpacing);
   }
   //horizontal lines
   for (var i = 0; i < GRID_SIZE; i++) {
-    CTX.moveTo(pad, pad + gridSpacing * i);
-    CTX.lineTo(pad + (GRID_SIZE - 1) * gridSpacing, pad + gridSpacing * i);
+    context.moveTo(pad, pad + gridSpacing * i);
+    context.lineTo(pad + (GRID_SIZE - 1) * gridSpacing, pad + gridSpacing * i);
   }
-  CTX.stroke();
+  context.stroke();
 
   // Drawing tengen star point
   var tengen = new boardRef((GRID_SIZE - 1) / 2, (GRID_SIZE - 1) / 2);
-  drawDot(tengen.point);
+  drawDot(tengen.point, context);
 
   document.getElementById("turn").innerHTML = playerTurn + "'s turn";
 
@@ -451,12 +410,12 @@ function getCursorPosition(canvas, event) {
   return new point(x, y);
 }
 
-function drawDot(point) {
-  CTX.beginPath();
-  CTX.arc(point.x, point.y, 3, 0, 2 * Math.PI);
-  CTX.fillStyle = "black";
-  CTX.fill();
-  CTX.stroke();
+function drawDot(point, context) {
+  context.beginPath();
+  context.arc(point.x, point.y, 3, 0, 2 * Math.PI);
+  context.fillStyle = "black";
+  context.fill();
+  context.stroke();
 }
 
 function DrawStones(board, context) {
@@ -474,7 +433,7 @@ function DrawStones(board, context) {
   });
 }
 
-function getBoardRef(point) {
+function getBoardRef(point, clickMapArray) {
   for (var i = 0; i < GRID_SIZE; i++) {
     for (var j = 0; j < GRID_SIZE; j++) {
       var xMin = clickMapArray[i][j].x - boxSize / 2;
@@ -488,49 +447,7 @@ function getBoardRef(point) {
         point.y <= yMax
       ) {
         return new boardRef(i, j);
-        break;
       }
     }
   }
-}
-var allStones = [];
-
-function placeStone(boardRef) {
-  if (gameState[boardRef.bx - 1][boardRef.by - 1] == undefined) {
-    newStone = new stone(boardRef.bx, boardRef.by, playerTurn, moveIndex);
-    newStone.show();
-    gameState[boardRef.bx - 1][boardRef.by - 1] = newStone;
-    changeTurn();
-    moveIndex += 1;
-    for (var i = 0; i < allStones.length; i++) {
-      if (checkLife(allStones[i]) == false) {
-        deleteStone(allStones[i]);
-      }
-    }
-  } else {
-    window.alert("spot already taken");
-  }
-}
-
-var deadStones = [];
-
-function reDrawStones() {
-  for (var i = 0; i < allStones.length; i++) {
-    allStones[i].show;
-  }
-}
-
-function deleteStone(stone) {
-  sx = stone.boardRef.bx - 1;
-  sy = stone.boardRef.by - 1;
-  gameState[sx][sy] = undefined;
-  for (var i = 0; i < allStones.length; i++) {
-    if (allStones[i].moveIndex == stone.moveIndex) {
-      deadStones.push(allStones[i]);
-      allStones.splice(i, 1);
-      break;
-    }
-  }
-  drawBoard();
-  reDrawStones();
 }
