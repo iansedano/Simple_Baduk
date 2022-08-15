@@ -49,18 +49,14 @@ class group {
       var cardinals = getCardinals(friendsToCheck[i]);
       // above outputs a list of 4 positions or "edge"
 
-      // gets an array of the cardinal states for readability
-      var cardinalStates = [];
-      cardinalStates = cardinals.map((i) => i.state);
+      const cardinalStates = cardinals.map((i) => i.state);
 
       // following ignores edge or enemy
       // if empty adds liberty and to checked list
       // if friend adds to friends to check and checked list and group positions
       for (j = 0; j < 4; j++) {
-        if (cardinals[j] == "edge") {
-          //do nothing
-        } else if (this.isPosInGroup(cardinals[j])) {
-          // do nothing
+        if (cardinals[j] == "edge" || this.isPosInGroup(cardinals[j])) {
+          continue;
         } else if (cardinalStates[j] == "empty") {
           this.liberties += 1;
           checkedList[cardinals[j].bx][cardinals[j].by] = cardinals[j];
@@ -74,8 +70,7 @@ class group {
   }
 
   isPosInGroup(pos) {
-    var groupPosIndex = "";
-    groupPosIndex = this.positions.findIndex((p) => p == pos);
+    const groupPosIndex = this.positions.findIndex((p) => p == pos);
     if (groupPosIndex == -1) {
       return false;
     } else if (groupPosIndex > -1) {
@@ -112,11 +107,11 @@ const GRID_SIZE = 9;
 const PADDING = 48.5;
 const GRID_SPACING = 50;
 
-let playerTurn = "black";
-const playerBlack = new player("black");
-const playerWhite = new player("white");
+let PLAYER_TURN = "black";
+const PLAYER_BLACK = new player("black");
+const PLAYER_WHITE = new player("white");
 
-const clickMapArray = createClickMap();
+const CLICK_MAP_ARRAY = createClickMap();
 
 var BOARD = new Array(GRID_SIZE);
 for (var i = 0; i < GRID_SIZE; i++) {
@@ -132,7 +127,7 @@ for (i = 0; i < GRID_SIZE; i++) {
 drawBoard(PADDING, GRID_SPACING, CTX);
 
 CANVAS.addEventListener("mousedown", function (e) {
-  bRef = getBoardRef(getCursorPosition(CANVAS, e), clickMapArray);
+  bRef = getBoardRef(getCursorPosition(CANVAS, e), CLICK_MAP_ARRAY);
 
   if (bRef != undefined) {
     currentPlayer = getPlayer();
@@ -158,7 +153,7 @@ DrawStones(board, ctx)
 
 // simple group capture setup
 
-playerTurn = "white";
+PLAYER_TURN = "white";
 BOARD[1][2].state = "white";
 BOARD[2][3].state = "white";
 BOARD[3][2].state = "white";
@@ -187,18 +182,18 @@ function findCoordinate(pos) {
 }
 
 function getPlayer() {
-  if (playerTurn === "black") {
-    return playerBlack;
+  if (PLAYER_TURN === "black") {
+    return PLAYER_BLACK;
   } else {
-    return playerWhite;
+    return PLAYER_WHITE;
   }
 }
 
 function changeTurn() {
-  if (playerTurn === "black") {
-    playerTurn = "white";
+  if (PLAYER_TURN === "black") {
+    PLAYER_TURN = "white";
   } else {
-    playerTurn = "black";
+    PLAYER_TURN = "black";
   }
 }
 
@@ -209,7 +204,7 @@ function move(bRef, activePlayer) {
     window.alert("spot already taken");
   } else {
     // Temporary assigning colour to position
-    currentPosition.state = playerTurn;
+    currentPosition.state = PLAYER_TURN;
 
     // initalizing groups list
     var groups = [];
@@ -373,12 +368,12 @@ function drawBoard(pad, gridSpacing, context) {
   var tengen = new boardRef((GRID_SIZE - 1) / 2, (GRID_SIZE - 1) / 2);
   drawDot(tengen.point, context);
 
-  document.getElementById("turn").innerHTML = playerTurn + "'s turn";
+  document.getElementById("turn").innerHTML = PLAYER_TURN + "'s turn";
 
   document.getElementById("whitePrisoners").innerHTML =
-    "black has " + playerBlack.prisoners + " prisoners.";
+    "black has " + PLAYER_BLACK.prisoners + " prisoners.";
   document.getElementById("blackPrisoners").innerHTML =
-    "white has " + playerWhite.prisoners + " prisoners";
+    "white has " + PLAYER_WHITE.prisoners + " prisoners";
 }
 
 function createClickMap() {
