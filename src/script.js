@@ -1,18 +1,18 @@
-class player {
+class Player {
   constructor(colour) {
     this.colour = colour;
     this.prisoners = 0;
   }
 }
 
-class point {
+class Point {
   constructor(x, y) {
     this.x = x;
     this.y = y;
   }
 }
 
-class boardRef {
+class BoardRef {
   constructor(boardX, boardY) {
     this.bx = boardX;
     this.by = boardY;
@@ -20,7 +20,7 @@ class boardRef {
   }
 }
 
-class group {
+class Group {
   constructor() {
     this.positions = [];
     this.liberties = 0;
@@ -46,7 +46,7 @@ class group {
     // going through the friends
     for (i = 0; i < friendsToCheck.length; i++) {
       // getting the adjacent positions
-      var cardinals = getCardinals(friendsToCheck[i]);
+      var cardinals = this.getCardinals(friendsToCheck[i]);
       // above outputs a list of 4 positions or "edge"
 
       const cardinalStates = cardinals.map((i) => i.state);
@@ -77,9 +77,50 @@ class group {
       return true;
     }
   }
+
+  getCardinals(position) {
+    // initalizing cardinals
+    let N;
+    let E;
+    let S;
+    let W;
+
+    // for readability
+    let bx = position.bx;
+    let by = position.by;
+
+    // checking for edges
+    if (bx == 0) {
+      W = "edge";
+    } else if (bx == GRID_SIZE - 1) {
+      E = "edge";
+    }
+
+    if (by == GRID_SIZE - 1) {
+      S = "edge";
+    } else if (by == 0) {
+      N = "edge";
+    }
+
+    // assigning positions if not edge
+    if (N != "edge") {
+      N = BOARD[bx][by - 1];
+    }
+    if (E != "edge") {
+      E = BOARD[bx + 1][by];
+    }
+    if (S != "edge") {
+      S = BOARD[bx][by + 1];
+    }
+    if (W != "edge") {
+      W = BOARD[bx - 1][by];
+    }
+
+    return [N, E, S, W];
+  }
 }
 
-class boardPosition {
+class BoardPosition {
   constructor(bx, by) {
     this.bx = bx;
     this.by = by;
@@ -108,8 +149,8 @@ const PADDING = 48.5;
 const GRID_SPACING = 50;
 
 let PLAYER_TURN = "black";
-const PLAYER_BLACK = new player("black");
-const PLAYER_WHITE = new player("white");
+const PLAYER_BLACK = new Player("black");
+const PLAYER_WHITE = new Player("white");
 
 const CLICK_MAP_ARRAY = createClickMap();
 
@@ -120,7 +161,7 @@ for (var i = 0; i < GRID_SIZE; i++) {
 
 for (i = 0; i < GRID_SIZE; i++) {
   for (var j = 0; j < GRID_SIZE; j++) {
-    BOARD[i][j] = new boardPosition(i, j);
+    BOARD[i][j] = new BoardPosition(i, j);
   }
 }
 
@@ -178,7 +219,7 @@ DrawStones(board, ctx)
 function findCoordinate(pos) {
   var x = PADDING + pos.bx * GRID_SPACING;
   var y = PADDING + pos.by * GRID_SPACING;
-  return new point(x, y);
+  return new Point(x, y);
 }
 
 function getPlayer() {
@@ -200,15 +241,11 @@ function changeTurn() {
 function move(bRef, activePlayer) {
   var currentPosition = BOARD[bRef.bx][bRef.by];
   if (currentPosition.state !== "empty") {
-    // checking if spot taken
     window.alert("spot already taken");
   } else {
-    // Temporary assigning colour to position
     currentPosition.state = PLAYER_TURN;
 
-    // initalizing groups list
-    var groups = [];
-    buildGroups(currentPosition, groups);
+    const groups = buildGroups();
 
     //which group is the current move in?
     var currentGroup = findGroupByPosition(currentPosition, groups);
@@ -272,15 +309,16 @@ function findGroupByPosition(positionToFind, groupList) {
   }
 }
 
-function buildGroups(pos, groups) {
+function buildGroups() {
+  const groups = [];
   // making blank board to track checking
   var checked = new Array(GRID_SIZE);
-  for (var i = 0; i < GRID_SIZE; i++) {
+  for (let i = 0; i < GRID_SIZE; i++) {
     checked[i] = new Array(GRID_SIZE);
   }
 
-  for (var i = 0; i < GRID_SIZE; i++) {
-    for (var j = 0; j < GRID_SIZE; j++) {
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
       checked[i][j] = "unchecked";
     }
   }
@@ -288,60 +326,21 @@ function buildGroups(pos, groups) {
   // checking whole board and building groups
   // (builds new picture of groups for every move)
 
-  for (var i = 0; i < BOARD.length; i++) {
-    for (var j = 0; j < BOARD[i].length; j++) {
+  for (let i = 0; i < BOARD.length; i++) {
+    for (let j = 0; j < BOARD[i].length; j++) {
       posBeingChecked = BOARD[i][j];
       if (checked[i][j] == "unchecked") {
         checked[i][j] = posBeingChecked;
         if (posBeingChecked.state != "empty") {
-          var newGroup = new group(); // initalizing new group
+          let newGroup = new Group(); // initalizing new group
           newGroup.buildFrom(posBeingChecked, checked); // building group
           groups.push(newGroup); // adding to group list
         }
       }
     }
   }
-}
 
-function getCardinals(position) {
-  // initalizing cardinals
-  var N;
-  var E;
-  var S;
-  var W;
-
-  // for readability
-  var bx = position.bx;
-  var by = position.by;
-
-  // checking for edges
-  if (bx == 0) {
-    W = "edge";
-  } else if (bx == GRID_SIZE - 1) {
-    E = "edge";
-  }
-
-  if (by == GRID_SIZE - 1) {
-    S = "edge";
-  } else if (by == 0) {
-    N = "edge";
-  }
-
-  // assigning positions if not edge
-  if (N != "edge") {
-    N = BOARD[bx][by - 1];
-  }
-  if (E != "edge") {
-    E = BOARD[bx + 1][by];
-  }
-  if (S != "edge") {
-    S = BOARD[bx][by + 1];
-  }
-  if (W != "edge") {
-    W = BOARD[bx - 1][by];
-  }
-
-  return [N, E, S, W];
+  return groups;
 }
 
 function drawBoard(pad, gridSpacing, context) {
@@ -365,7 +364,7 @@ function drawBoard(pad, gridSpacing, context) {
   context.stroke();
 
   // Drawing tengen star point
-  var tengen = new boardRef((GRID_SIZE - 1) / 2, (GRID_SIZE - 1) / 2);
+  var tengen = new BoardRef((GRID_SIZE - 1) / 2, (GRID_SIZE - 1) / 2);
   drawDot(tengen.point, context);
 
   document.getElementById("turn").innerHTML = PLAYER_TURN + "'s turn";
@@ -378,7 +377,7 @@ function drawBoard(pad, gridSpacing, context) {
 
 function createClickMap() {
   const clickMapArray = new Array(GRID_SIZE);
-  for (var i = 0; i < GRID_SIZE; i++) {
+  for (let i = 0; i < GRID_SIZE; i++) {
     clickMapArray[i] = new Array(GRID_SIZE);
   }
 
@@ -386,10 +385,10 @@ function createClickMap() {
   positionX = PADDING;
   positionY = PADDING;
 
-  for (var i = 0; i < GRID_SIZE; i++) {
+  for (let i = 0; i < GRID_SIZE; i++) {
     positionY = PADDING;
-    for (var j = 0; j < GRID_SIZE; j++) {
-      clickMapArray[i][j] = new point(positionX, positionY);
+    for (let j = 0; j < GRID_SIZE; j++) {
+      clickMapArray[i][j] = new Point(positionX, positionY);
       positionY += GRID_SPACING;
     }
     positionX += GRID_SPACING;
@@ -402,7 +401,7 @@ function getCursorPosition(canvas, event) {
   const rect = canvas.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
-  return new point(x, y);
+  return new Point(x, y);
 }
 
 function drawDot(point, context) {
@@ -441,7 +440,7 @@ function getBoardRef(point, clickMapArray) {
         point.y >= yMin &&
         point.y <= yMax
       ) {
-        return new boardRef(i, j);
+        return new BoardRef(i, j);
       }
     }
   }
